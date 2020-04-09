@@ -54,7 +54,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is not None:
+            return print(f"Err: There is already a value at index {index}")
+        else:
+            self.storage[index] = value
+            return
 
 
 
@@ -66,7 +71,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is not None:
+            self.storage[index] = None
+        else:
+            print(f"Warning: Key is not found.")
 
 
     def retrieve(self, key):
@@ -77,7 +86,8 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        return self.storage[index]
 
 
     def resize(self):
@@ -91,30 +101,41 @@ class HashTable:
 
 
 
-if __name__ == "__main__":
-    ht = HashTable(2)
+# if __name__ == "__main__":
+#     ht = HashTable(2)
 
-    ht.insert("line_1", "Tiny hash table")
-    ht.insert("line_2", "Filled beyond capacity")
-    ht.insert("line_3", "Linked list saves the day!")
+#     ht.insert("line_1", "Tiny hash table")
+#     ht.insert("line_2", "Filled beyond capacity")
+#     ht.insert("line_3", "Linked list saves the day!")
 
-    print("")
+#     print("")
 
-    # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     # Test storing beyond capacity
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    # Test resizing
-    old_capacity = len(ht.storage)
-    ht.resize()
-    new_capacity = len(ht.storage)
+#     # Test resizing
+#     old_capacity = len(ht.storage)
+#     ht.resize()
+#     new_capacity = len(ht.storage)
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     # Test if data intact after resizing
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    print("")
+#     print("")
+
+ht = HashTable(8)
+
+print(ht.storage)
+ht.insert("first", "1st")
+print(ht.storage)
+ht.insert("Second", "2nd")
+print(ht.storage)
+print(ht.retrieve("first"))
+ht.remove("first")
+print(ht.storage)
