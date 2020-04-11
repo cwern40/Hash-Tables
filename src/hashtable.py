@@ -54,12 +54,20 @@ class HashTable:
 
         Fill this in.
         '''
+        # Part 1
+        # index = self._hash_mod(key)
+        # if self.storage[index] is not None:
+        #     return print(f"Err: There is already a value at index {index}")
+        # else:
+        #     self.storage[index] = value
+        #     return
         index = self._hash_mod(key)
         if self.storage[index] is not None:
-            return print(f"Err: There is already a value at index {index}")
+            prev_item = self.storage[index]
+            self.storage[index] = LinkedPair(key, value)
+            self.storage[index].next = prev_item
         else:
-            self.storage[index] = value
-            return
+            self.storage[index] = LinkedPair(key, value)
 
 
 
@@ -87,7 +95,16 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        return self.storage[index]
+        if self.storage[index] is None:
+            return None
+        current = self.storage[index]
+        while current.key is not key and current.next is not None:
+            current = current.next
+        if current == key:
+            return current
+        else:
+            return None
+
 
 
     def resize(self):
@@ -97,6 +114,12 @@ class HashTable:
 
         Fill this in.
         '''
+        old_storage = self.storage
+        self.capacity *= 2
+        self.storage = [None] * self.capacity
+
+        for pair in old_storage:
+            self.insert(pair.key, pair.valid)
         pass
 
 
