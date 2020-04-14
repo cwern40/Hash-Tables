@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.amount = 0
 
 
     def _hash(self, key):
@@ -27,12 +28,10 @@ class HashTable:
 
 
     def _hash_djb2(self, key):
-        '''
-        Hash an arbitrary key using DJB2 hash
-
-        OPTIONAL STRETCH: Research and implement DJB2
-        '''
-        pass
+        djb2_hash = 5381
+        for x in key:
+            djb2_hash = (( djb2_hash << 5) + djb2_hash) + ord(x)
+        return djb2_hash
 
 
     def _hash_mod(self, key):
@@ -40,7 +39,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
-        return self._hash(key) % self.capacity
+        return self._hash_djb2(key) % self.capacity
 
 
     def insert(self, key, value):
@@ -54,9 +53,29 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        # Part 1
+        # index = self._hash_mod(key)
+        # if self.storage[index] is not None:
+        #     return print(f"Err: There is already a value at index {index}")
+        # else:
+        #     self.storage[index] = value
+        #     return
+        index = self._hash_mod(key)
+        self.amount += 1
+        # if self.amount / self.capacity >= .7:
+        #     self.resize()
+        if self.storage[index] is not None:
+            current = self.storage[index]
+            while current.key is not key and current.next is not None:
+                current = current.next
+            if current.key == key:
+                current.value = value
+            else:
+                prev_item = self.storage[index]
+                self.storage[index] = LinkedPair(key, value)
+                self.storage[index].next = prev_item
+        else:
+            self.storage[index] = LinkedPair(key, value)
 
     def remove(self, key):
         '''
@@ -66,8 +85,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        index = self._hash_mod(key)
+        if self.storage[index] is None:
+            print(f"Warning: Key is not found.")
+        else:
+            current = self.storage[index]
+            prev_item = None
+            while current.key is not key and current.next is not None:
+                prev_item = current
+                current = current.next
+            if current.key == key:
+                if prev_item is None:
+                    self.storage[index] = None
+                else:
+                    prev_item.next = current.next
+            else:
+                print(f"Warning: Key is not found.")
 
     def retrieve(self, key):
         '''
@@ -77,7 +110,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is None:
+            return None
+        current = self.storage[index]
+        while current.key is not key and current.next is not None:
+            current = current.next
+        if current.key == key:
+            return current.value
+        else:
+            return None
+
 
 
     def resize(self):
@@ -87,7 +130,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        old_storage = self.storage
+        self.capacity *= 2
+        self.storage = [None] * self.capacity
+
+        for pair in old_storage:
+            if pair is not None and pair.next == None:
+                self.insert(pair.key, pair.value)
+            else:
+                current = pair
+                while current is not None:
+                    self.insert(current.key, current.value)
+                    current = current.next
 
 
 
